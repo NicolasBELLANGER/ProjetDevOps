@@ -1,0 +1,49 @@
+---
+- name: Install Packages for PostgreSQL
+  apt:
+    name: '{{ item.name }}'
+    state: present
+  with_items: "{{ postgres_packages | default([]) }}"
+  become: true
+
+- name: Configuration Addresses in postgresql.conf
+  lineinfile:
+    path: /etc/postgresql/15/main/postgresql.conf
+    regexp: '^listen_addresses ='
+    line: "listen_addresses = '0.0.0.0'"
+  become: true
+
+- name: Configuration in pg_hba.conf
+  lineinfile:
+    path: /etc/postgresql/15/main/pg_hba.conf
+    regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\+s.*$'
+    line: 'host all all 0.0.0.0/0 trust'
+  become: true
+
+- name: Configuration in pg_hba.conf for postgres user
+  lineinfile:
+    path: /etc/postgresql/15/main/pg_hba.conf
+    regexp: '^local\s+all\s+postgres\s+peer$'
+    line: 'local all postgres trust'
+  become: true
+
+- name: Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
+  become: true
+
+- name: Create user Vargrant
+  postgresql_user:
+    name: '{{ postgres_user }}'
+    password: '{{ postgres_password }}'
+    state: present
+  become: true
+
+- name: Create Database
+  postgresql_db:
+    name: '{{ item.name }}'
+    owner: '{{ postgres_user }}'
+  with_items: '{{ postgres_database }}'
+  become: true
+    

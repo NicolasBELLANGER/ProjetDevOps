@@ -1,0 +1,5 @@
+---
+gitlab_hostname: gitlab.example.com
+gitlab_external_url: "http://192.168.72.130"
+gitlab_root_password: "MonSuperMotDePasse123!"
+gitlab_packages: "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh"

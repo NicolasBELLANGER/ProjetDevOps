@@ -1,0 +1,12 @@
+---
+common_dependencies:
+  - name: curl
+  - name: vim
+  - name: git
+  - name: wget
+  - name: unzip
+  - name: apt-transport-https
+  - name: net-tools
+  - name: openssh-server
+  - name: ca-certificates
+  - name: software-properties-common

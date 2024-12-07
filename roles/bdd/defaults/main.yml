@@ -1,0 +1,10 @@
+---
+postgres_packages:
+  - name: postgresql
+  - name: python3-psycopg2
+
+postgres_database:
+  - name: all
+  - name: dev
+  - name: stage
+  - name: prod

@@ -1,0 +1,7 @@
+- name: Deployer Gitlab et PostgreSQL
+  hosts: cible
+  roles:
+    - common
+    - docker
+    - gitlab
+    - bdd

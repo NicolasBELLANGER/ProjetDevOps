@@ -1,0 +1,4 @@
+---
+packages_docker:
+  - name: docker.io
+  - name: docker-compose

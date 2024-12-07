@@ -1,0 +1,42 @@
+---
+- name: Install Docker Packages
+  apt:
+    name: "{{ item.name }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ packages_docker | default([]) }}"
+  become: true
+
+- name: Create repository for Gitlab
+  file:
+    path: /home/gitlab
+    state: directory
+    mode: '0755'
+
+- name: Copy required files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0755'
+  with_items:
+    - { src: "files/dockerfile", dest: "/home/gitlab/dockerfile" }
+    - { src: "files/docker-compose.yml", dest: "/home/gitlab/docker-compose.yml" }
+
+- name : Deploy Gitlab Configuration
+  template:
+    src: gitlab.rb.j2
+    dest: /home/gitlab/gitlab.rb
+  become: true
+
+- name: Start Gitlab using DockerCompose
+  command: docker compose -f /home/gitlab/docker-compose.yml up -d
+  args:
+    chdir: /home/gitlab
+
+- name: Wait for Gitlab to be ready
+  wait_for:
+    host: 127.0.0.1
+    port: 80
+    state: started
+    delay: 60
+    timeout: 300
